@@ -1,0 +1,14 @@
+﻿@model IEnumerable<string>
+@{
+    ViewData["Title"] = "Dependent";
+}
+
+<h2>Client application</h2> <br />
+<h3>Dependent data :</h3>
+
+<ul>
+    @foreach (var data in Model)
+    {
+        <li>@data</li>
+    }
+</ul>

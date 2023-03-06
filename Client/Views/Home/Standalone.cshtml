@@ -1,0 +1,14 @@
+﻿@model IEnumerable<string>
+@{
+    ViewData["Title"] = "Standalone";
+}
+
+<h2>Client application</h2> <br />
+<h3>Standalone data :</h3>
+
+<ul>
+    @foreach (var data in Model)
+    {
+        <li>@data</li>
+    }
+</ul>
