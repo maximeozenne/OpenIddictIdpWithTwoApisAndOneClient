@@ -1,4 +1,6 @@
-﻿using OpenIddict.Abstractions;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace IdentityProvider;
@@ -15,6 +17,8 @@ public class Worker : IHostedService
         await using var scope = _serviceProvider.CreateAsyncScope();
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
         // Register Standalone Api
         if (await manager.FindByClientIdAsync("standaloneapi") is null)
@@ -170,6 +174,16 @@ public class Worker : IHostedService
             });
         }
 
+        // Register Test User
+        if (await userManager.FindByNameAsync("testuser") is null)
+        {
+            var testuser = new IdentityUser
+            {
+                UserName = "testuser"
+            };
+
+            var result = await userManager.CreateAsync(testuser, "testpassword");
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
