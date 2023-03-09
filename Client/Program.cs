@@ -1,40 +1,41 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Client;
+using OpenIddict.Validation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAntiforgery(options =>
-{
-    options.HeaderName = "X-XSRF-TOKEN";
-    options.Cookie.Name = "__Host-X-XSRF-TOKEN";
-    options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-});
 
-builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
-.AddCookie()
-.AddOpenIdConnect(options =>
-{
-   options.SignInScheme = "Cookies";
-   options.Authority = "https://localhost:5443";
-   options.ClientId = "client";
-   options.ClientSecret = "client-secret";
-   options.RequireHttpsMetadata = true;
-   options.ResponseType = "code";
-   options.UsePkce = true;
-   options.Scope.Add("profile");
-   options.SaveTokens = true;
-   options.GetClaimsFromUserInfoEndpoint = true;
 });
 
-builder.Services.AddControllersWithViews(options =>
-     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+builder.Services.AddOpenIddict()
+
+    // Register the OpenIddict client components.
+    .AddClient(options =>
+    {
+        options.AllowAuthorizationCodeFlow();
+
+        // Register the System.Net.Http integration and use the identity of the current
+        // assembly as a more specific user agent, which can be useful when dealing with
+        // providers that use the user agent as a way to throttle requests (e.g Reddit).
+        options.UseSystemNetHttp()
+               .SetProductInformation(typeof(Program).Assembly);
+
+        // Add a client registration matching the client application definition in the server project.
+        options.AddRegistration(new OpenIddictClientRegistration
+        {
+            Issuer = new Uri("https://localhost:5443/", UriKind.Absolute),
+
+            ClientId = "client",
+            ClientSecret = "client-secret"
+        });
+    });
+
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +51,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
