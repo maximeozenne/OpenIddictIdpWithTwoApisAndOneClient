@@ -17,7 +17,7 @@ builder.Services.AddOpenIddict()
     // Register the OpenIddict client components.
     .AddClient(options =>
     {
-        options.AllowAuthorizationCodeFlow();
+        options.AllowClientCredentialsFlow();
 
         // Register the System.Net.Http integration and use the identity of the current
         // assembly as a more specific user agent, which can be useful when dealing with

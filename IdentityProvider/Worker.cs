@@ -95,7 +95,9 @@ public class Worker : IHostedService
                     Permissions.Endpoints.Logout,
                     Permissions.Endpoints.Token,
                     Permissions.Endpoints.Revocation,
+                    Permissions.Endpoints.Introspection,
 
+                    Permissions.GrantTypes.ClientCredentials,
                     Permissions.GrantTypes.AuthorizationCode,
                     Permissions.GrantTypes.RefreshToken,
 
@@ -173,7 +175,7 @@ public class Worker : IHostedService
                 DisplayName = "Dependent API access",
                 Resources =
                 {
-                    "standaloneapi"
+                    "dependentapi"
                 }
             });
         }
