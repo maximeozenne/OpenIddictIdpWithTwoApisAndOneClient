@@ -1,21 +1,18 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using OpenIddict.Abstractions;
-using OpenIddict.Server.AspNetCore;
-using System.Security.Claims;
+﻿using AspNet.Security.OpenIdConnect.Primitives;
+using IdentityProvider.Helpers;
+using IdentityProvider.ViewModels.Authorization;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-
-using static OpenIddict.Abstractions.OpenIddictConstants;
+using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
 using System.Collections.Immutable;
-using IdentityProvider.Helpers;
-using IdentityProvider.ViewModels.Authorization;
-using AspNet.Security.OpenIdConnect.Server;
-using AspNet.Security.OpenIdConnect.Primitives;
-using OpenIddict.Validation.AspNetCore;
+using System.Security.Claims;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace IdentityProvider.Controllers;
 
