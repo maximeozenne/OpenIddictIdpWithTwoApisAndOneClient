@@ -1,5 +1,4 @@
 using OpenIddict.Server.AspNetCore;
-using OpenIddict.Validation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
