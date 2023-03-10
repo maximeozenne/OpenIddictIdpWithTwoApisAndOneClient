@@ -27,8 +27,8 @@ builder.Services.AddOpenIddict()
         {
             Issuer = new Uri("https://localhost:5443/", UriKind.Absolute),
 
-            ClientId = "dependantapi",
-            ClientSecret = "dependantapi-secret"
+            ClientId = "dependentapi",
+            ClientSecret = "dependentapi-secret"
         });
     });
 
