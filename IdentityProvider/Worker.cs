@@ -33,6 +33,7 @@ public class Worker : IHostedService
                     Permissions.Endpoints.Authorization,
                     Permissions.Endpoints.Token,
                     Permissions.Endpoints.Revocation,
+                    Permissions.Endpoints.Introspection,
 
                     Permissions.GrantTypes.ClientCredentials,
 
@@ -58,6 +59,7 @@ public class Worker : IHostedService
                     Permissions.Endpoints.Authorization,
                     Permissions.Endpoints.Token,
                     Permissions.Endpoints.Revocation,
+                    Permissions.Endpoints.Introspection,
 
                     Permissions.GrantTypes.ClientCredentials,
 
@@ -127,6 +129,7 @@ public class Worker : IHostedService
                 {
                     Permissions.Endpoints.Authorization,
                     Permissions.Endpoints.Token,
+                    Permissions.Endpoints.Introspection,
 
                     Permissions.GrantTypes.AuthorizationCode,
                     Permissions.GrantTypes.ClientCredentials,
@@ -156,7 +159,8 @@ public class Worker : IHostedService
                 Resources =
                 {
                     "standaloneapi"
-                }
+                },
+                
             });
         }
 

@@ -54,10 +54,11 @@ builder.Services
     {
         // Enable the authorization, logout, token and userinfo endpoints.
         options
-        .SetAuthorizationEndpointUris("connect/authorize")
-                .SetLogoutEndpointUris("connect/logout")
-                .SetTokenEndpointUris("connect/token")
-                .SetUserinfoEndpointUris("connect/userinfo");
+            .SetAuthorizationEndpointUris("connect/authorize")
+            .SetLogoutEndpointUris("connect/logout")
+            .SetTokenEndpointUris("connect/token")
+            .SetUserinfoEndpointUris("connect/userinfo")
+            .SetIntrospectionEndpointUris("connect/introspect");
 
         // Mark the "profile" and "roles" scopes as supported scopes.
         options.RegisterScopes(
