@@ -83,6 +83,9 @@ builder.Services
                 .EnableLogoutEndpointPassthrough()
                 .EnableStatusCodePagesIntegration()
                 .EnableTokenEndpointPassthrough();
+
+        // We can remove this comment to disable JWT encryption and make our application compatible with third-party APIs/resource servers
+        //options.DisableAccessTokenEncryption();
     })
 
     // Register the OpenIddict validation components.
