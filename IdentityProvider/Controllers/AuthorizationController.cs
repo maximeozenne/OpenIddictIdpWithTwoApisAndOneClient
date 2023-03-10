@@ -345,6 +345,16 @@ public class AuthorizationController : Controller
                 request.ClientId,
                 OpenIdConnectConstants.Destinations.AccessToken);
 
+            // Set the list of scopes granted to the client application in access_token.
+            var principal = new ClaimsPrincipal(identity);
+            principal.SetScopes(request.GetScopes());
+            principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+
+            foreach (var claim in principal.Claims)
+            {
+                claim.SetDestinations(GetDestinations(claim));
+            }
+
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(
                 new ClaimsPrincipal(identity),
