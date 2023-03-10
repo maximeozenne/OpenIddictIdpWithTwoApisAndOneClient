@@ -53,7 +53,8 @@ builder.Services
     .AddServer(options =>
     {
         // Enable the authorization, logout, token and userinfo endpoints.
-        options.SetAuthorizationEndpointUris("connect/authorize")
+        options
+        .SetAuthorizationEndpointUris("connect/authorize")
                 .SetLogoutEndpointUris("connect/logout")
                 .SetTokenEndpointUris("connect/token")
                 .SetUserinfoEndpointUris("connect/userinfo");

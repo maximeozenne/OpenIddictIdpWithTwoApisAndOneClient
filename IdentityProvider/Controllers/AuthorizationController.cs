@@ -13,6 +13,9 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 using System.Collections.Immutable;
 using IdentityProvider.Helpers;
 using IdentityProvider.ViewModels.Authorization;
+using AspNet.Security.OpenIdConnect.Server;
+using AspNet.Security.OpenIdConnect.Primitives;
+using OpenIddict.Validation.AspNetCore;
 
 namespace IdentityProvider.Controllers;
 
@@ -332,6 +335,23 @@ public class AuthorizationController : Controller
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        if (request.IsClientCredentialsGrantType())
+        {
+            var identity = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            identity.AddClaim(
+                OpenIdConnectConstants.Claims.Subject,
+                request.ClientId,
+                OpenIdConnectConstants.Destinations.AccessToken);
+
+            // Create a new authentication ticket holding the user identity.
+            var ticket = new AuthenticationTicket(
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties(),
+                OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+
+            return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
         }
 
         throw new InvalidOperationException("The specified grant type is not supported.");

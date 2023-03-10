@@ -1,10 +1,11 @@
+using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    options.DefaultScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme;
 });
 
 builder.Services

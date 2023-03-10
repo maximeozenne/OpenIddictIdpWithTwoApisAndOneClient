@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using OpenIddict.Client;
 using OpenIddict.Validation.AspNetCore;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,3 +60,23 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+static async Task<string> GetTokenAsync(IServiceProvider provider)
+{
+    var service = provider.GetRequiredService<OpenIddictClientService>();
+
+    var (response, _) = await service.AuthenticateWithClientCredentialsAsync(new Uri("https://localhost:5443/", UriKind.Absolute));
+    return response.AccessToken;
+}
+
+static async Task<string> GetResourceAsync(IServiceProvider provider, string token)
+{
+    using var client = provider.GetRequiredService<HttpClient>();
+    using var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44385/api/message");
+    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+    using var response = await client.SendAsync(request);
+    response.EnsureSuccessStatusCode();
+
+    return await response.Content.ReadAsStringAsync();
+}
