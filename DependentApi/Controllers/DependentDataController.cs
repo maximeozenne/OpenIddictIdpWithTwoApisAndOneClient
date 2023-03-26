@@ -2,7 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace StandaloneApi.Controllers;
 
@@ -22,7 +27,12 @@ public class DependentDataController : ControllerBase
         };
 
         var client = new HttpClient();
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", Request.Headers[HeaderNames.Authorization].ToString());
+        //client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", Request.Headers[HeaderNames.Authorization].ToString());
+
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        //var accessToken = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:5446/standalonedata");
 
