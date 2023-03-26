@@ -1,15 +1,18 @@
+using Fido2Identity;
+using Fido2NetLib;
 using IdentityProvider;
 using IdentityProvider.Dao;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using System;
+using System.Configuration;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -34,6 +37,23 @@ builder.Services.AddQuartz(options =>
 // Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
 builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAllOrigins",
+//        builder =>
+//        {
+//            builder
+//                .AllowCredentials()
+//                .WithOrigins(
+//                    "https://localhost:4200", "https://localhost:4204")
+//                .SetIsOriginAllowedToAllowWildcardSubdomains()
+//                .AllowAnyHeader()
+//                .AllowAnyMethod();
+//        });
+//});
+
+
+
 builder.Services
     .AddOpenIddict()
 
@@ -55,14 +75,16 @@ builder.Services
         // Enable the authorization, logout, token and userinfo endpoints.
         options
             .SetAuthorizationEndpointUris("connect/authorize")
+            .SetIntrospectionEndpointUris("connect/introspect")
             .SetLogoutEndpointUris("connect/logout")
             .SetTokenEndpointUris("connect/token")
             .SetUserinfoEndpointUris("connect/userinfo")
-            .SetIntrospectionEndpointUris("connect/introspect");
+            .SetVerificationEndpointUris("connect/verify");
 
         // Mark the "profile" and "roles" scopes as supported scopes.
         options.RegisterScopes(
             Scopes.Profile,
+            Scopes.Email,
             Scopes.Roles,
             "standaloneapi",
             "dependentapi");
@@ -100,7 +122,7 @@ builder.Services
     });
 
 builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>(options =>
+    .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         options.Password.RequiredLength = 8;
         options.Password.RequireNonAlphanumeric = false;
@@ -108,7 +130,43 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.Password.RequireDigit = false;
     })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddDefaultUI()
+    .AddTokenProvider<Fido2UserTwoFactorTokenProvider>("FIDO2");
+
+builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
+builder.Services.AddScoped<Fido2Store>();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Configure Identity to use the same JWT claims as OpenIddict instead
+    // of the legacy WS-Federation claims it uses by default (ClaimTypes),
+    // which saves you from doing the mapping in your authorization controller.
+    options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+    options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+    options.ClaimsIdentity.RoleClaimType = Claims.Role;
+    options.ClaimsIdentity.EmailClaimType = Claims.Email;
+
+    // Note: to require account confirmation before login,
+    // register an email sender service (IEmailSender) and
+    // set options.SignIn.RequireConfirmedAccount to true.
+    //
+    // For more information, visit https://aka.ms/aspaccountconf.
+    options.SignIn.RequireConfirmedAccount = false;
+});
+
+
 
 // Register the worker responsible for seeding the database.
 // Note: in a real world application, this step should be part of a setup script.
@@ -122,6 +180,8 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+//app.UseCors("AllowAllOrigins");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -130,8 +190,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseSession();
+
+app.MapControllers();
+app.MapDefaultControllerRoute();
+app.MapRazorPages();
 
 app.Run();

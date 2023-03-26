@@ -1,6 +1,7 @@
 ﻿@using IdentityProvider.ViewModels.Authorization;
 @using Microsoft.Extensions.Primitives
 @model AuthorizeViewModel
+
 <div class="jumbotron">
     <h1>Authorization</h1>
 
@@ -9,7 +10,7 @@
     <form asp-controller="Authorization" asp-action="Authorize" method="post">
         @* Flow the request parameters so they can be received by the Accept/Reject actions: *@
         @foreach (var parameter in Context.Request.HasFormContentType ?
-            (IEnumerable<KeyValuePair<string, StringValues>>) Context.Request.Form : Context.Request.Query)
+        (IEnumerable<KeyValuePair<string, StringValues>>)Context.Request.Form : Context.Request.Query)
         {
             <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
         }

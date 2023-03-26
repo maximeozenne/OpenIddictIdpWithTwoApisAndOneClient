@@ -1,11 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Fido2Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace IdentityProvider.Dao
+namespace IdentityProvider.Dao;
+
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options) { }
+    }
+
+    public DbSet<FidoStoredCredential> FidoStoredCredential => Set<FidoStoredCredential>();
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<FidoStoredCredential>().HasKey(m => m.Id);
+
+        base.OnModelCreating(builder);
     }
 }

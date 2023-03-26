@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using IdentityProvider.Dao;
+using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -18,7 +18,7 @@ public class Worker : IHostedService
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
 
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         // Register Standalone Api
         if (await manager.FindByClientIdAsync("standaloneapi") is null)
@@ -83,11 +83,11 @@ public class Worker : IHostedService
                 DisplayName = "Client Application",
                 PostLogoutRedirectUris =
                 {
-                    new Uri("https://localhost:5443/authentication/logout-callback")
+                    new Uri("https://localhost:5444/authentication/signout-oidc")
                 },
                 RedirectUris =
                 {
-                    new Uri("https://localhost:5443/authentication/login-callback")
+                    new Uri("https://localhost:5444/authentication/signin-oidc")
                 },
                 Permissions =
                 {
@@ -104,6 +104,7 @@ public class Worker : IHostedService
                     Permissions.ResponseTypes.Code,
 
                     Permissions.Scopes.Profile,
+                    Permissions.Scopes.Email,
                     Permissions.Scopes.Roles,
                     Permissions.Prefixes.Scope + "standaloneapi",
                     Permissions.Prefixes.Scope + "dependentapi"
@@ -178,17 +179,6 @@ public class Worker : IHostedService
                     "dependentapi"
                 }
             });
-        }
-
-        // Register Test User
-        if (await userManager.FindByNameAsync("testuser") is null)
-        {
-            var testuser = new IdentityUser
-            {
-                UserName = "testuser"
-            };
-
-            var result = await userManager.CreateAsync(testuser, "testpassword");
         }
     }
 
