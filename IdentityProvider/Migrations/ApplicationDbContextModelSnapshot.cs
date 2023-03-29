@@ -22,46 +22,6 @@ namespace IdentityProvider.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Fido2Identity.FidoStoredCredential", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("AaGuid")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CredType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DescriptorJson")
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("PublicKey")
-                        .HasColumnType("bytea");
-
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("SignatureCounter")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("UserHandle")
-                        .HasColumnType("bytea");
-
-                    b.Property<byte[]>("UserId")
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FidoStoredCredential");
-                });
-
             modelBuilder.Entity("IdentityProvider.Dao.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")

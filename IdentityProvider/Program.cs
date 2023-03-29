@@ -1,12 +1,8 @@
-using Fido2Identity;
-using Fido2NetLib;
 using IdentityProvider;
 using IdentityProvider.Dao;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using System;
-using System.Configuration;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -132,11 +128,7 @@ builder.Services
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
-    .AddDefaultUI()
-    .AddTokenProvider<Fido2UserTwoFactorTokenProvider>("FIDO2");
-
-builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
-builder.Services.AddScoped<Fido2Store>();
+    .AddDefaultUI();
 
 builder.Services.AddDistributedMemoryCache();
 

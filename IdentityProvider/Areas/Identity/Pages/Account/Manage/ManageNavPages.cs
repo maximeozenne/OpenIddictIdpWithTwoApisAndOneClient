@@ -59,9 +59,9 @@ namespace IdentityProvider.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public static string TwoFactorAuthentication => "TwoFactorAuthentication";
+        //public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
-        public static string Fido2Mfa => "Fido2Mfa";
+        //public static string Fido2Mfa => "Fido2Mfa";
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -109,9 +109,9 @@ namespace IdentityProvider.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
+        //public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
 
-        public static string Fido2MfaNavClass(ViewContext viewContext) => PageNavClass(viewContext, Fido2Mfa);
+        //public static string Fido2MfaNavClass(ViewContext viewContext) => PageNavClass(viewContext, Fido2Mfa);
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

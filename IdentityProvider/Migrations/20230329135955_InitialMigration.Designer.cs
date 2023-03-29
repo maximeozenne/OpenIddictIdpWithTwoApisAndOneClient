@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityProvider.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230326182040_InitialMigration")]
+    [Migration("20230329135955_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -24,46 +24,6 @@ namespace IdentityProvider.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Fido2Identity.FidoStoredCredential", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("AaGuid")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CredType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DescriptorJson")
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("PublicKey")
-                        .HasColumnType("bytea");
-
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("SignatureCounter")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("UserHandle")
-                        .HasColumnType("bytea");
-
-                    b.Property<byte[]>("UserId")
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FidoStoredCredential");
-                });
 
             modelBuilder.Entity("IdentityProvider.Dao.ApplicationUser", b =>
                 {

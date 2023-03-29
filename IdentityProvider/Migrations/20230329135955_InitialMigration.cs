@@ -52,27 +52,6 @@ namespace IdentityProvider.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FidoStoredCredential",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<byte[]>(type: "bytea", nullable: true),
-                    PublicKey = table.Column<byte[]>(type: "bytea", nullable: true),
-                    UserHandle = table.Column<byte[]>(type: "bytea", nullable: true),
-                    SignatureCounter = table.Column<long>(type: "bigint", nullable: false),
-                    CredType = table.Column<string>(type: "text", nullable: true),
-                    RegDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AaGuid = table.Column<Guid>(type: "uuid", nullable: false),
-                    DescriptorJson = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FidoStoredCredential", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OpenIddictApplications",
                 columns: table => new
                 {
@@ -365,9 +344,6 @@ namespace IdentityProvider.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "FidoStoredCredential");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");
